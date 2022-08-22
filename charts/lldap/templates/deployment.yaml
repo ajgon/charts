@@ -1,0 +1,225 @@
+{{- if not .Values.domain }}
+{{- required "domain is required" .Values.domain }}
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "lldap.fullname" . }}
+  labels:
+    {{- include "lldap.labels" . | nindent 4 }}
+  annotations:
+    ignore-check.kube-linter.io/env-var-secret: "LLDAP_JWT_SECRET is false positive for this check"
+{{- if .Values.commonAnnotations }}
+{{- include "tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+{{- end }}
+spec:
+  {{- if .Values.replicaCount }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  strategy:
+  {{- if .Values.strategy }}
+    {{- toYaml .Values.strategy | nindent 4 }}
+  {{- else }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "lldap.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "lldap.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "lldap.serviceAccountName" . }}
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "2"
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- if .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          {{- end }}
+          env:
+            - name: LLDAP_VERBOSE
+              value: {{ ternary "true" "false" (or .Values.image.debug .Values.log.verbose) | quote }}
+            - name: LLDAP_HTTP_URL
+              value: {{ default (printf "http{{ if $.Values.ingress.tls }}s{{ end }}://%s" .Values.domain) | quote }}
+            {{- if .Values.jwt.useSecretFile }}
+            - name: LLDAP_JWT_SECRET_FILE
+              value: "/secrets/jwt-secret"
+            {{- else }}
+            - name: LLDAP_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "lldap.fullname" . }}
+                  key: jwt-secret
+            {{- end }}
+            - name: LLDAP_LDAP_BASE_DN
+              value: {{ .Values.ldap.baseDn | default (printf "dc=%s" (join ",dc=" (splitList "." .Values.domain))) | quote }}
+            - name: LLDAP_LDAP_USER_DN
+              value: {{ .Values.ldap.userDn | quote }}
+            {{- if .Values.ldap.userEmail }}
+            - name: LLDAP_LDAP_USER_EMAIL
+              value: {{ .Values.ldap.userEmail | quote }}
+            {{- end }}
+            {{- if .Values.ldap.useSecretFile }}
+            - name: LLDAP_LDAP_USER_PASS_FILE
+              value: "/secrets/user-password"
+            {{- else }}
+            - name: LLDAP_LDAP_USER_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "lldap.fullname" . }}
+                  key: user-password
+            {{- end }}
+            - name: LLDAP_KEY_FILE
+              value: "/secrets/key-file"
+            {{- if .Values.ignoredAttributes.user }}
+            - name: LLDAP_IGNORED_USER_ATTRIBUTES
+              value: '["{{ join "\",\"" .Values.ignoredAttributes.user }}"]'
+            {{- end }}
+            {{- if .Values.ignoredAttributes.group }}
+            - name: LLDAP_IGNORED_GROUP_ATTRIBUTES
+              value: '["{{ join "\",\"" .Values.ignoredAttributes.group }}"]'
+            {{- end }}
+            - name: LLDAP_SMTP_OPTIONS__ENABLE_PASSWORD_RESET
+              value: {{ ternary "true" "false" .Values.smtp.enablePasswordReset | quote }}
+            {{- if .Values.smtp.server }}
+            - name: LLDAP_SMTP_OPTIONS__SERVER
+              value: {{ .Values.smtp.server | quote }}
+            {{- end }}
+            - name: LLDAP_SMTP_OPTIONS__PORT
+              value: {{ .Values.smtp.port | quote }}
+            - name: LLDAP_SMTP_OPTIONS__SMTP_ENCRYPTION
+              value: {{ .Values.smtp.encryption | quote }}
+            {{- if .Values.smtp.from }}
+            - name: LLDAP_SMTP_OPTIONS__FROM
+              value: {{ .Values.smtp.from | quote }}
+            {{- end }}
+            {{- if .Values.smtp.replyTo }}
+            - name: LLDAP_SMTP_OPTIONS__REPLY_TO
+              value: {{ .Values.smtp.replyTo | quote }}
+            {{- end }}
+            {{- if .Values.smtp.user }}
+            - name: LLDAP_SMTP_OPTIONS__USER
+              value: {{ .Values.smtp.user | quote }}
+            {{- end }}
+            {{- if .Values.smtp.useSecretFile }}
+            - name: LLDAP_SMTP_OPTIONS__PASSWORD_FILE
+              value: "/secrets/smtp-password"
+            {{- else }}
+            - name: LLDAP_SMTP_OPTIONS__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "lldap.fullname" . }}
+                  key: smtp-password
+            {{- end }}
+            - name: LLDAP_LDAPS_OPTIONS__ENABLED
+              value: {{ ternary "true" "false" .Values.ldaps.enabled | quote }}
+            {{- if .Values.ldaps.enabled }}
+            - name: LLDAP_LDAPS_OPTIONS__CERT_FILE
+              value: "/secrets/cert.pem"
+            - name: LLDAP_LDAPS_OPTIONS__KEY_FILE
+              value: "/secrets/key.pem"
+            {{- end }}
+          ports:
+            - name: ldap
+              containerPort: 3890
+              protocol: TCP
+            - name: ldaps
+              containerPort: 6360
+              protocol: TCP
+            - name: http
+              containerPort: 17170
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: lldap-secrets
+              mountPath: /secrets/
+            - name: lldap-data
+              mountPath: /data/
+      volumes:
+        - name: lldap-secrets
+          secret:
+            secretName: {{ template "lldap.fullname" . }}
+            defaultMode: 0400
+            items:
+            {{- if .Values.jwt.useSecretFile }}
+            - key: jwt-secret
+              path: jwt-secret
+            {{- end }}
+            {{- if .Values.smtp.useSecretFile }}
+            - key: smtp-password
+              path: smtp-password
+            {{- end }}
+            {{- if .Values.ldap.useSecretFile }}
+            - key: user-password
+              path: user-password
+            {{- end }}
+            - key: key-file
+              path: key-file
+            {{- if .Values.ldaps.enabled }}
+            - key: cert.pem
+              path: cert.pem
+            - key: key.pem
+              path: key.pem
+            {{- end }}
+        {{- if not .Values.persistence.enabled }}
+        - name: lldap-data
+          {{- if .Values.persistence.medium }}
+          emptyDir: {
+            medium: {{ .Values.persistence.medium | quote }}
+          }
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+  {{- else if .Values.persistence.existingClaim }}
+        - name: lldap-data
+          persistentVolumeClaim:
+            claimName: {{ printf "%s" (tpl .Values.persistence.existingClaim .) }}
+  {{- else }}
+        - name: lldap-data
+          persistentVolumeClaim:
+            claimName: {{ printf "lldap-data-%s" (include "lldap.fullname" .) }}
+  {{- end }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

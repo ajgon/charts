@@ -1,0 +1,280 @@
+## @section Common parameters
+##
+## test
+
+## @param domain Basic domain, which will be exposed
+##
+domain: ""
+## @param nameOverride String to partially override common.names.fullname
+##
+nameOverride: ""
+## @param fullnameOverride String to fully override common.names.fullname
+##
+fullnameOverride: ""
+## @param affinity Affinity for pods assignment
+##
+affinity: {}
+## @param clusterDomain Kubernetes cluster domain name
+##
+clusterDomain: cluster.local
+## @param commonAnnotations Annotations to add to all deployed objects
+##
+commonAnnotations: {}
+## @param commonLabels Labels to add to all deployed objects
+##
+commonLabels: {}
+## @param extraDeploy Array of extra objects to deploy with the release
+##
+extraDeploy: []
+## @param imagePullSecrets Docker registry secret names as an array
+##
+imagePullSecrets: []
+## @param nodeSelector Node labels for pods assignment
+##
+nodeSelector: {}
+## @param podAnnotations Annotations for pods
+##
+podAnnotations: {}
+## @param replicaCount Number of replicas
+##
+replicaCount: 3
+## @param resources Limit resources for the conainers
+##
+resources: {}
+## @param secretAnnotations Annotations to add to secret
+##
+secretAnnotations: {}
+## @param securityContext Run containers as a specific securityContext
+##
+securityContext: {}
+## @param strategy Deployment strategy
+##
+strategy: {}
+## @param tolerations Tolerations for pods assignment
+##
+tolerations: []
+
+## lldap service account configuration
+## ref: https://hub.docker.com/r/nitnelave/lldap/tags/
+## @param serviceAccount.create Specifies whether a ServiceAccount should be created
+## @param serviceAccount.name The name of the ServiceAccount to use
+## @param serviceAccount.annotations Additional custom annotations for the ServiceAccount
+##
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+## lldap service configuration
+## @param service.type Kubernetes service type for traffic
+## @param service.httpPort Port for http traffic
+## @param service.ldapPort Port for ldap traffic
+## @param service.ldapsPort Port for ldaps traffic (if ldaps enabled)
+##
+service:
+  type: ClusterIP
+  httpPort: 17170
+  ldapPort: 389
+  ldapsPort: 636
+
+## lldap networkPolicy configuration
+## @param networkPolicy.enabled Enable creation of NetworkPolicy resources
+## @param networkPolicy.allowExternal Don't require client label for connections
+## @param networkPolicy.extraIngress Add extra ingress rules to the NetworkPolicy
+## @param networkPolicy.extraEgress Add extra egress rules to the NetworkPolicy
+## @param networkPolicy.ingressNSMatchLabels Labels to match to allow traffic from other namespaces
+## @param networkPolicy.ingressNSPodMatchLabels Pod labels to match to allow traffic from other namespaces
+##
+networkPolicy:
+  enabled: false
+  allowExternal: true
+  extraIngress: []
+  extraEgress: []
+  ingressNSMatchLabels: {}
+  ingressNSPodMatchLabels: {}
+
+## @section Image parameters
+##
+
+## lldap image
+## ref: https://hub.docker.com/r/nitnelave/lldap/tags/
+## @param image.registry lldap image registry
+## @param image.repository lldap image repository
+## @param image.tag lldap image tag (immutable tags are recommended)
+## @param image.pullPolicy lldap image pull policy
+## @param image.pullSecrets lldap image pull secrets
+## @param image.debug Enable image debug mode
+##
+image:
+  registry: docker.io
+  repository: nitnelave/lldap
+  tag: v0.4.0
+  pullPolicy: ""
+  pullSecrets: []
+  debug: false
+
+## @section Ingress configuration
+##
+
+## @param ingress.enabled Enable ingress
+## @param ingress.className Add ingress class name
+## @param ingress.annotations Add ingress annotations
+## @param ingress.hosts[0].host Add host for ingress, if empty domain will be used
+## @param ingress.hosts[0].paths[0].path Add path for each ingress host
+## @param ingress.hosts[0].paths[0].pathType Add ingress path type
+## @param ingress.tls Add ingress tls settings
+##
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: ""
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+## @section Persistence configuration
+##
+
+## @param persistence.enabled Enable lldap data persistence using PVC
+## @param persistence.medium Provide a medium for emptyDir volumes
+## @param persistence.storageClass Persistent Volume storage class
+## @param persistence.accessModes Persistent Volume access modes
+## @param persistence.size Persistent Volume size
+## @param persistence.selector Additional labels to match for the PVC
+## @param persistence.dataSource Custom PVC data source
+## @param persistence.existingClaim Use a existing PVC which must be created manually before bound
+persistence:
+  enabled: false
+  medium: ""
+  storageClass: ""
+  accessModes: ["ReadWriteMany"]
+  size: "32Mi"
+  selector: {}
+  dataSource: {}
+  existingClaim: ""
+
+## @section Configuration parameters
+## https://github.com/nitnelave/lldap/blob/main/lldap_config.docker_template.toml
+##
+
+## lldap logging parameters
+## @param log.verbose Tune the logging to be more verbose by setting this to be true
+##
+log:
+  verbose: false
+
+## lldap JWT configuration
+jwt:
+  ## @param jwt.secret Random secret for JWT signature
+  ## This secret should be random, and should be shared with application servers that need to consume the JWTs
+  ## Changing this secret will invalidate all user sessions and require them to re-login
+  ## If not set, it will be auto-generated on first run
+  ##
+  secret: ""
+  ## @param jwt.useSecretFile Mount jwt secret as file instead of using an environment variable
+  ##
+  useSecretFile: true
+
+
+## lldap LDAP configuration
+##
+ldap:
+  ## @param ldap.baseDn Base DN for LDAP
+  ## This is usually your domain name, and is used as a namespace for your users
+  ## The choice is arbitrary, but will be needed to configure the LDAP integration with other services
+  ## ref: https://github.com/nitnelave/lldap/blob/main/lldap_config.docker_template.toml#L33
+  ##
+  baseDn: ""
+  ## @param ldap.userDn Admin username
+  ## ref: https://github.com/nitnelave/lldap/blob/main/lldap_config.docker_template.toml#L42
+  ##
+  userDn: "admin"
+  ## @param ldap.userEmail Admin email
+  ## Email for the admin account. It is only used when initially creating the admin user, and can safely be omitted
+  ##
+  userEmail: "admin@localhost"
+  ## @param ldap.userPass Admin password
+  ## Password for the admin account, both for the LDAP bind and for the administration interface
+  ## It is only used when initially creating the admin user
+  ## It should be minimum 8 characters long
+  ## If not set, it will be auto-generated on first run
+  userPass: ""
+  ## @param ldap.useSecretFile Mount password as file instead of using an environment variable
+  ##
+  useSecretFile: true
+
+## lldap private key file.
+## Contains the secret private key used to store the passwords safely
+## Note that even with a database dump and the private key, an attacker would still have to perform an (expensive) brute force attack to find each password
+## Randomly generated on first run if not provided in any form
+##
+keyFile:
+  ## @param keyFile.value Private key - 128 bytes encoded in base64
+  ## If not set, it will be auto-generated on first run
+  ##
+  value: ""
+
+## lldap ignored attributes
+## Some services will request attributes that are not present in LLDAP
+## When it is the case, LLDAP will warn about the attribute being unknown
+## If you want to ignore the attribute and the service works without, you can add it to this list to silence the warning
+##
+## @param ignoredAttributes.user Ignored user attributes
+## @param ignoredAttributes.group Ignored group attributes
+ignoredAttributes:
+  user: []
+  group: []
+
+
+## lldap SMTP options
+## Options to configure SMTP parameters, to send password reset emails
+##
+smtp:
+  ## @param smtp.enablePasswordReset Whether to enabled password reset via email, from LLDAP
+  ##
+  enablePasswordReset: false
+  ## @param smtp.server The SMTP server
+  ##
+  server: ""
+  ## @param smtp.port The SMTP port
+  ##
+  port: 587
+  ## @param smtp.encryption How the connection is encrypted, either "TLS" or "STARTTLS"
+  ##
+  encryption: "STARTTLS"
+  ## @param smtp.from The header field, optional: how the sender appears in the email
+  ## The first is a free-form name, followed by an email between <>.
+  ## for example: "LLDAP Admin <lldap@localhost>"
+  ##
+  from: ""
+  ## @param smtp.replyTo The header field, optional: who should receive a reply of lldap email
+  ## The first is a free-form name, followed by an email between <>.
+  ## for example: "LLDAP Admin <lldap@localhost>"
+  ##
+  replyTo: ""
+  ## @param smtp.user The SMTP user, usually your email address
+  ##
+  user: ""
+  ## @param smtp.password The SMTP password
+  ##
+  password: ""
+  ## @param smtp.useSecretFile Mount password as file instead of using an environment variable
+  ##
+  useSecretFile: true
+
+## lldap options to configure LDAPS
+##
+ldaps:
+  ## @param ldaps.enabled Whether to enable LDAPS
+  ## NOTE: helm cannot generate pkcs#8 private keys yet, so it's not possible to autogenerate certificates, you have to generate them externally and provide here
+  ##
+  enabled: false
+  ## @param ldaps.certificateKey Private key in PEM#8 format
+  ##
+  certificateKey: ""
+  ## @param ldaps.certificate Certificate
+  ##
+  certificate: ""
