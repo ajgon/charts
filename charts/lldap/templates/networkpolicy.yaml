@@ -1,0 +1,46 @@
+{{- if .Values.networkPolicy.enabled }}
+kind: NetworkPolicy
+apiVersion: {{ template "networkPolicy.apiVersion" . }}
+metadata:
+  name: {{ template "lldap.fullname" . }}
+  labels:
+    {{- include "lldap.labels" . | nindent 4 }}
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+spec:
+  policyTypes:
+    - Ingress
+  {{- if .Values.networkPolicy.extraEgress }}
+    - Egress
+  egress:
+    {{- if .Values.networkPolicy.extraEgress }}
+    {{- include "tplvalues.render" ( dict "value" .Values.networkPolicy.extraEgress "context" $ ) | nindent 4 }}
+    {{- end }}
+  {{- end }}
+  ingress:
+    # Allow inbound connections
+    - ports:
+        - port: {{ .Values.master.containerPorts.redis }}
+      {{- if not .Values.networkPolicy.allowExternal }}
+      from:
+        {{- if .Values.networkPolicy.ingressNSMatchLabels }}
+        - namespaceSelector:
+            matchLabels:
+              {{- range $key, $value := .Values.networkPolicy.ingressNSMatchLabels }}
+              {{ $key | quote }}: {{ $value | quote }}
+              {{- end }}
+          {{- if .Values.networkPolicy.ingressNSPodMatchLabels }}
+          podSelector:
+            matchLabels:
+              {{- range $key, $value := .Values.networkPolicy.ingressNSPodMatchLabels }}
+              {{ $key | quote }}: {{ $value | quote }}
+              {{- end }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+    {{- if .Values.networkPolicy.extraIngress }}
+    {{- include "tplvalues.render" ( dict "value" .Values.networkPolicy.extraIngress "context" $ ) | nindent 4 }}
+    {{- end }}
+{{- end }}
+
