@@ -278,3 +278,5 @@ ldaps:
   ## @param ldaps.certificate Certificate
   ##
   certificate: ""
+
+test: "test"
