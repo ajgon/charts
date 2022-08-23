@@ -1,0 +1,29 @@
+apiVersion: v1
+entries:
+  lldap:
+  - annotations:
+      category: LDAP
+    apiVersion: v2
+    appVersion: 0.4.0
+    created: "2022-08-23T16:59:28.15412592Z"
+    description: Light LDAP server for user management
+    digest: cc8b309eba3edcd96af87aeee45f50b382c9d0183235915b4c187386c469fd5f
+    home: https://github.com/ajgon/charts/tree/master/lldap
+    icon: https://github.com/ajgon/charts/tree/master/lldap/icon.png
+    keywords:
+    - lldap
+    - ldap
+    - access-management
+    maintainers:
+    - name: ajgon
+      url: https://github.com/ajgon/charts
+    - email: helm@ajgon.ovh
+      name: ajgon
+    name: lldap
+    sources:
+    - https://github.com/nitnelave/lldap
+    type: application
+    urls:
+    - https://github.com/ajgon/charts/releases/download/lldap-0.1.0/lldap-0.1.0.tgz
+    version: 0.1.0
+generated: "2022-08-23T16:59:28.15413072Z"
