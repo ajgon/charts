@@ -65,7 +65,7 @@ spec:
             - name: LLDAP_VERBOSE
               value: {{ ternary "true" "false" (or .Values.image.debug .Values.log.verbose) | quote }}
             - name: LLDAP_HTTP_URL
-              value: {{ default (printf "http{{ if $.Values.ingress.tls }}s{{ end }}://%s" .Values.domain) | quote }}
+              value: {{ printf "http%s://%s" (ternary "s" "" (gt (len .Values.ingress.tls) 0)) .Values.domain | quote }}
             {{- if .Values.jwt.useSecretFile }}
             - name: LLDAP_JWT_SECRET_FILE
               value: "/secrets/jwt-secret"
