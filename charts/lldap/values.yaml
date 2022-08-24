@@ -11,6 +11,12 @@ nameOverride: ""
 ## @param fullnameOverride String to fully override common.names.fullname
 ##
 fullnameOverride: ""
+## @param uid UID of the user running lldap
+##
+uid: 1000
+## @param gid GID of the user running lldap
+##
+gid: 1000
 ## @param affinity Affinity for pods assignment
 ##
 affinity: {}
@@ -108,7 +114,7 @@ networkPolicy:
 image:
   registry: docker.io
   repository: nitnelave/lldap
-  tag: v0.4.0
+  tag: ""
   pullPolicy: ""
   pullSecrets: []
   debug: false
@@ -126,7 +132,7 @@ image:
 ##
 ingress:
   enabled: false
-  className: "nginx"
+  className: ""
   annotations: {}
   hosts:
     - host: ""

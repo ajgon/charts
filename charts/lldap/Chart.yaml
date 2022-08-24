@@ -1,7 +1,7 @@
 annotations:
   category: LDAP
 apiVersion: v2
-appVersion: "0.4.0"
+appVersion: "latest-alpine"
 description: Light LDAP server for user management
 home: https://github.com/ajgon/charts/tree/master/charts/lldap
 icon: https://github.com/ajgon/charts/raw/master/charts/lldap/icon.png
@@ -18,4 +18,4 @@ name: lldap
 sources:
   - https://github.com/nitnelave/lldap
 type: application
-version: 0.1.1
+version: 0.2.0

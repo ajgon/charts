@@ -9,6 +9,7 @@ metadata:
     {{- include "lldap.labels" . | nindent 4 }}
   annotations:
     ignore-check.kube-linter.io/env-var-secret: "LLDAP_JWT_SECRET is false positive for this check"
+    ignore-check.kube-linter.io/run-as-non-root: "image forces permissions setting"
 {{- if .Values.commonAnnotations }}
 {{- include "tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
 {{- end }}
@@ -43,9 +44,7 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "lldap.serviceAccountName" . }}
       securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+        fsGroup: {{ .Values.gid }}
       dnsConfig:
         options:
           - name: ndots
@@ -59,6 +58,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
           {{- end }}
           env:
+            - name: UID
+              value: {{.Values.uid | quote}}
+            - name: GID
+              value: {{.Values.gid | quote}}
             - name: LLDAP_VERBOSE
               value: {{ ternary "true" "false" (or .Values.image.debug .Values.log.verbose) | quote }}
             - name: LLDAP_HTTP_URL
