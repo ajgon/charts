@@ -2,7 +2,7 @@
 {{- required "domain is required" .Values.domain }}
 {{- end }}
 apiVersion: apps/v1
-kind: Deployment
+kind: {{ .Values.podKind }}
 metadata:
   name: {{ include "lldap.fullname" . }}
   labels:
@@ -10,13 +10,18 @@ metadata:
   annotations:
     ignore-check.kube-linter.io/env-var-secret: "LLDAP_JWT_SECRET is false positive for this check"
     ignore-check.kube-linter.io/run-as-non-root: "image forces permissions setting"
+    ignore-check.kube-linter.io/no-rolling-update-strategy: "DaemonSets cannot have strategies"
 {{- if .Values.commonAnnotations }}
 {{- include "tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
 {{- end }}
 spec:
+  {{- if (not (eq .Values.podKind "DaemonSet")) }}
   {{- if .Values.replicaCount }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
+  {{- if (eq .Values.podKind "StatefulSet") }}
+  serviceName: {{ include "lldap.fullname" . }}
+  {{- else }}
   strategy:
   {{- if .Values.strategy }}
     {{- toYaml .Values.strategy | nindent 4 }}
@@ -25,6 +30,8 @@ spec:
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 0
+  {{- end }}
+  {{- end }}
   {{- end }}
   selector:
     matchLabels:

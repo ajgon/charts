@@ -56,6 +56,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `domain`                                | Basic domain, which will be exposed                        | `""`            |
 | `nameOverride`                          | String to partially override common.names.fullname         | `""`            |
 | `fullnameOverride`                      | String to fully override common.names.fullname             | `""`            |
+| `uid`                                   | UID of the user running lldap                              | `1000`          |
+| `gid`                                   | GID of the user running lldap                              | `1000`          |
 | `affinity`                              | Affinity for pods assignment                               | `{}`            |
 | `clusterDomain`                         | Kubernetes cluster domain name                             | `cluster.local` |
 | `commonAnnotations`                     | Annotations to add to all deployed objects                 | `{}`            |
@@ -64,6 +66,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `imagePullSecrets`                      | Docker registry secret names as an array                   | `[]`            |
 | `nodeSelector`                          | Node labels for pods assignment                            | `{}`            |
 | `podAnnotations`                        | Annotations for pods                                       | `{}`            |
+| `podKind`                               | Pod kind, must be Deployment, DaemonSet, or StatefulSet    | `DaemonSet`     |
 | `replicaCount`                          | Number of replicas                                         | `3`             |
 | `resources`                             | Limit resources for the conainers                          | `{}`            |
 | `secretAnnotations`                     | Annotations to add to secret                               | `{}`            |
@@ -90,7 +93,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | ------------------- | ------------------------------------------------ | ----------------- |
 | `image.registry`    | lldap image registry                             | `docker.io`       |
 | `image.repository`  | lldap image repository                           | `nitnelave/lldap` |
-| `image.tag`         | lldap image tag (immutable tags are recommended) | `v0.4.0`          |
+| `image.tag`         | lldap image tag (immutable tags are recommended) | `""`              |
 | `image.pullPolicy`  | lldap image pull policy                          | `""`              |
 | `image.pullSecrets` | lldap image pull secrets                         | `[]`              |
 | `image.debug`       | Enable image debug mode                          | `false`           |
@@ -100,7 +103,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Name                                 | Description                                        | Value    |
 | ------------------------------------ | -------------------------------------------------- | -------- |
 | `ingress.enabled`                    | Enable ingress                                     | `false`  |
-| `ingress.className`                  | Add ingress class name                             | `nginx`  |
+| `ingress.className`                  | Add ingress class name                             | `""`     |
 | `ingress.annotations`                | Add ingress annotations                            | `{}`     |
 | `ingress.hosts[0].host`              | Add host for ingress, if empty domain will be used | `""`     |
 | `ingress.hosts[0].paths[0].path`     | Add path for each ingress host                     | `/`      |

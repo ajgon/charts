@@ -41,9 +41,12 @@ nodeSelector: {}
 ## @param podAnnotations Annotations for pods
 ##
 podAnnotations: {}
+## @param podKind Pod kind, must be Deployment, DaemonSet, or StatefulSet
+##
+podKind: DaemonSet
 ## @param replicaCount Number of replicas
 ##
-replicaCount: 3
+replicaCount: 1
 ## @param resources Limit resources for the conainers
 ##
 resources: {}
