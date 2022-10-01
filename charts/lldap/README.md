@@ -62,6 +62,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `clusterDomain`                         | Kubernetes cluster domain name                             | `cluster.local` |
 | `commonAnnotations`                     | Annotations to add to all deployed objects                 | `{}`            |
 | `commonLabels`                          | Labels to add to all deployed objects                      | `{}`            |
+| `podLabels`                             | Labels to add to pods                                      | `{}`            |
 | `extraDeploy`                           | Array of extra objects to deploy with the release          | `[]`            |
 | `imagePullSecrets`                      | Docker registry secret names as an array                   | `[]`            |
 | `nodeSelector`                          | Node labels for pods assignment                            | `{}`            |
