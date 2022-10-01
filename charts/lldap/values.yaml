@@ -278,9 +278,14 @@ smtp:
 ##
 ldaps:
   ## @param ldaps.enabled Whether to enable LDAPS
-  ## NOTE: helm cannot generate pkcs#8 private keys yet, so it's not possible to autogenerate certificates, you have to generate them externally and provide here
   ##
   enabled: false
+  ## @param ldaps.createTlsSecret Generate TLS certificates for LDAPS
+  ##
+  createTlsSecret: true
+  ## @param ldaps.createdTlsSecretLifetime Generated certificates lifetime (in days)
+  ##
+  createdTlsSecretLifetime: 365
   ## @param ldaps.certificateKey Private key in PEM#8 format
   ##
   certificateKey: ""

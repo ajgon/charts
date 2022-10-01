@@ -67,7 +67,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `nodeSelector`                          | Node labels for pods assignment                            | `{}`            |
 | `podAnnotations`                        | Annotations for pods                                       | `{}`            |
 | `podKind`                               | Pod kind, must be Deployment, DaemonSet, or StatefulSet    | `DaemonSet`     |
-| `replicaCount`                          | Number of replicas                                         | `3`             |
+| `replicaCount`                          | Number of replicas                                         | `1`             |
 | `resources`                             | Limit resources for the conainers                          | `{}`            |
 | `secretAnnotations`                     | Annotations to add to secret                               | `{}`            |
 | `securityContext`                       | Run containers as a specific securityContext               | `{}`            |
@@ -125,28 +125,30 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ### Configuration parameters
 
-| Name                       | Description                                                           | Value             |
-| -------------------------- | --------------------------------------------------------------------- | ----------------- |
-| `log.verbose`              | Tune the logging to be more verbose by setting this to be true        | `false`           |
-| `jwt.secret`               | Random secret for JWT signature                                       | `""`              |
-| `jwt.useSecretFile`        | Mount jwt secret as file instead of using an environment variable     | `true`            |
-| `ldap.baseDn`              | Base DN for LDAP                                                      | `""`              |
-| `ldap.userDn`              | Admin username                                                        | `admin`           |
-| `ldap.userEmail`           | Admin email                                                           | `admin@localhost` |
-| `ldap.userPass`            | Admin password                                                        | `""`              |
-| `ldap.useSecretFile`       | Mount password as file instead of using an environment variable       | `true`            |
-| `keyFile.value`            | Private key - 128 bytes encoded in base64                             | `""`              |
-| `ignoredAttributes.user`   | Ignored user attributes                                               | `[]`              |
-| `ignoredAttributes.group`  | Ignored group attributes                                              | `[]`              |
-| `smtp.enablePasswordReset` | Whether to enabled password reset via email, from LLDAP               | `false`           |
-| `smtp.server`              | The SMTP server                                                       | `""`              |
-| `smtp.port`                | The SMTP port                                                         | `587`             |
-| `smtp.encryption`          | How the connection is encrypted, either "TLS" or "STARTTLS"           | `STARTTLS`        |
-| `smtp.from`                | The header field, optional: how the sender appears in the email       | `""`              |
-| `smtp.replyTo`             | The header field, optional: who should receive a reply of lldap email | `""`              |
-| `smtp.user`                | The SMTP user, usually your email address                             | `""`              |
-| `smtp.password`            | The SMTP password                                                     | `""`              |
-| `smtp.useSecretFile`       | Mount password as file instead of using an environment variable       | `true`            |
-| `ldaps.enabled`            | Whether to enable LDAPS                                               | `false`           |
-| `ldaps.certificateKey`     | Private key in PEM#8 format                                           | `""`              |
-| `ldaps.certificate`        | Certificate                                                           | `""`              |
+| Name                             | Description                                                           | Value             |
+| -------------------------------- | --------------------------------------------------------------------- | ----------------- |
+| `log.verbose`                    | Tune the logging to be more verbose by setting this to be true        | `false`           |
+| `jwt.secret`                     | Random secret for JWT signature                                       | `""`              |
+| `jwt.useSecretFile`              | Mount jwt secret as file instead of using an environment variable     | `true`            |
+| `ldap.baseDn`                    | Base DN for LDAP                                                      | `""`              |
+| `ldap.userDn`                    | Admin username                                                        | `admin`           |
+| `ldap.userEmail`                 | Admin email                                                           | `admin@localhost` |
+| `ldap.userPass`                  | Admin password                                                        | `""`              |
+| `ldap.useSecretFile`             | Mount password as file instead of using an environment variable       | `true`            |
+| `keyFile.value`                  | Private key - 128 bytes encoded in base64                             | `""`              |
+| `ignoredAttributes.user`         | Ignored user attributes                                               | `[]`              |
+| `ignoredAttributes.group`        | Ignored group attributes                                              | `[]`              |
+| `smtp.enablePasswordReset`       | Whether to enabled password reset via email, from LLDAP               | `false`           |
+| `smtp.server`                    | The SMTP server                                                       | `""`              |
+| `smtp.port`                      | The SMTP port                                                         | `587`             |
+| `smtp.encryption`                | How the connection is encrypted, either "TLS" or "STARTTLS"           | `STARTTLS`        |
+| `smtp.from`                      | The header field, optional: how the sender appears in the email       | `""`              |
+| `smtp.replyTo`                   | The header field, optional: who should receive a reply of lldap email | `""`              |
+| `smtp.user`                      | The SMTP user, usually your email address                             | `""`              |
+| `smtp.password`                  | The SMTP password                                                     | `""`              |
+| `smtp.useSecretFile`             | Mount password as file instead of using an environment variable       | `true`            |
+| `ldaps.enabled`                  | Whether to enable LDAPS                                               | `false`           |
+| `ldaps.createTlsSecret`          | Generate TLS certificates for LDAPS                                   | `true`            |
+| `ldaps.createdTlsSecretLifetime` | Generated certificates lifetime (in days)                             | `365`             |
+| `ldaps.certificateKey`           | Private key in PEM#8 format                                           | `""`              |
+| `ldaps.certificate`              | Certificate                                                           | `""`              |
