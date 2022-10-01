@@ -51,7 +51,9 @@ helm.sh/chart: {{ include "lldap.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- include "tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) }}
+{{- if .Values.commonLabels }}
+{{ include "tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) }}
+{{- end }}
 {{- end }}
 
 {{/*
