@@ -72,6 +72,10 @@ spec:
               value: {{.Values.uid | quote}}
             - name: GID
               value: {{.Values.gid | quote}}
+            {{- if .Values.timezone }}
+            - name: TZ
+              value: {{ .Values.timezone | quote }}
+            {{- end }}
             - name: LLDAP_VERBOSE
               value: {{ ternary "true" "false" (or .Values.image.debug .Values.log.verbose) | quote }}
             - name: LLDAP_HTTP_URL
@@ -153,6 +157,10 @@ spec:
               value: "/secrets/cert.pem"
             - name: LLDAP_LDAPS_OPTIONS__KEY_FILE
               value: "/secrets/key.pem"
+            {{- end }}
+            {{- range $name, $value := .Values.extraEnv }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
             {{- end }}
           ports:
             - name: ldap

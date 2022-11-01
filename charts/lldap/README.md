@@ -51,42 +51,44 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ### Common parameters
 
-| Name                                    | Description                                                | Value           |
-| --------------------------------------- | ---------------------------------------------------------- | --------------- |
-| `domain`                                | Basic domain, which will be exposed                        | `""`            |
-| `nameOverride`                          | String to partially override common.names.fullname         | `""`            |
-| `fullnameOverride`                      | String to fully override common.names.fullname             | `""`            |
-| `uid`                                   | UID of the user running lldap                              | `1000`          |
-| `gid`                                   | GID of the user running lldap                              | `1000`          |
-| `affinity`                              | Affinity for pods assignment                               | `{}`            |
-| `clusterDomain`                         | Kubernetes cluster domain name                             | `cluster.local` |
-| `commonAnnotations`                     | Annotations to add to all deployed objects                 | `{}`            |
-| `commonLabels`                          | Labels to add to all deployed objects                      | `{}`            |
-| `podLabels`                             | Labels to add to pods                                      | `{}`            |
-| `extraDeploy`                           | Array of extra objects to deploy with the release          | `[]`            |
-| `imagePullSecrets`                      | Docker registry secret names as an array                   | `[]`            |
-| `nodeSelector`                          | Node labels for pods assignment                            | `{}`            |
-| `podAnnotations`                        | Annotations for pods                                       | `{}`            |
-| `podKind`                               | Pod kind, must be Deployment, DaemonSet, or StatefulSet    | `DaemonSet`     |
-| `replicaCount`                          | Number of replicas                                         | `1`             |
-| `resources`                             | Limit resources for the conainers                          | `{}`            |
-| `secretAnnotations`                     | Annotations to add to secret                               | `{}`            |
-| `securityContext`                       | Run containers as a specific securityContext               | `{}`            |
-| `strategy`                              | Deployment strategy                                        | `{}`            |
-| `tolerations`                           | Tolerations for pods assignment                            | `[]`            |
-| `serviceAccount.create`                 | Specifies whether a ServiceAccount should be created       | `true`          |
-| `serviceAccount.name`                   | The name of the ServiceAccount to use                      | `""`            |
-| `serviceAccount.annotations`            | Additional custom annotations for the ServiceAccount       | `{}`            |
-| `service.type`                          | Kubernetes service type for traffic                        | `ClusterIP`     |
-| `service.httpPort`                      | Port for http traffic                                      | `17170`         |
-| `service.ldapPort`                      | Port for ldap traffic                                      | `389`           |
-| `service.ldapsPort`                     | Port for ldaps traffic (if ldaps enabled)                  | `636`           |
-| `networkPolicy.enabled`                 | Enable creation of NetworkPolicy resources                 | `false`         |
-| `networkPolicy.allowExternal`           | Don't require client label for connections                 | `true`          |
-| `networkPolicy.extraIngress`            | Add extra ingress rules to the NetworkPolicy               | `[]`            |
-| `networkPolicy.extraEgress`             | Add extra egress rules to the NetworkPolicy                | `[]`            |
-| `networkPolicy.ingressNSMatchLabels`    | Labels to match to allow traffic from other namespaces     | `{}`            |
-| `networkPolicy.ingressNSPodMatchLabels` | Pod labels to match to allow traffic from other namespaces | `{}`            |
+| Name                                    | Description                                                             | Value           |
+| --------------------------------------- | ----------------------------------------------------------------------- | --------------- |
+| `domain`                                | Basic domain, which will be exposed                                     | `""`            |
+| `nameOverride`                          | String to partially override common.names.fullname                      | `""`            |
+| `fullnameOverride`                      | String to fully override common.names.fullname                          | `""`            |
+| `uid`                                   | UID of the user running lldap                                           | `1000`          |
+| `gid`                                   | GID of the user running lldap                                           | `1000`          |
+| `affinity`                              | Affinity for pods assignment                                            | `{}`            |
+| `timezone`                              | Timezone of the pod, by default, UTC will be used                       | `""`            |
+| `clusterDomain`                         | Kubernetes cluster domain name                                          | `cluster.local` |
+| `commonAnnotations`                     | Annotations to add to all deployed objects                              | `{}`            |
+| `commonLabels`                          | Labels to add to all deployed objects                                   | `{}`            |
+| `podLabels`                             | Labels to add to pods                                                   | `{}`            |
+| `extraEnv`                              | Extra environment variables passed to the pod - in format: `key: value` | `{}`            |
+| `extraDeploy`                           | Array of extra objects to deploy with the release                       | `[]`            |
+| `imagePullSecrets`                      | Docker registry secret names as an array                                | `[]`            |
+| `nodeSelector`                          | Node labels for pods assignment                                         | `{}`            |
+| `podAnnotations`                        | Annotations for pods                                                    | `{}`            |
+| `podKind`                               | Pod kind, must be Deployment, DaemonSet, or StatefulSet                 | `DaemonSet`     |
+| `replicaCount`                          | Number of replicas                                                      | `1`             |
+| `resources`                             | Limit resources for the conainers                                       | `{}`            |
+| `secretAnnotations`                     | Annotations to add to secret                                            | `{}`            |
+| `securityContext`                       | Run containers as a specific securityContext                            | `{}`            |
+| `strategy`                              | Deployment strategy                                                     | `{}`            |
+| `tolerations`                           | Tolerations for pods assignment                                         | `[]`            |
+| `serviceAccount.create`                 | Specifies whether a ServiceAccount should be created                    | `true`          |
+| `serviceAccount.name`                   | The name of the ServiceAccount to use                                   | `""`            |
+| `serviceAccount.annotations`            | Additional custom annotations for the ServiceAccount                    | `{}`            |
+| `service.type`                          | Kubernetes service type for traffic                                     | `ClusterIP`     |
+| `service.httpPort`                      | Port for http traffic                                                   | `17170`         |
+| `service.ldapPort`                      | Port for ldap traffic                                                   | `389`           |
+| `service.ldapsPort`                     | Port for ldaps traffic (if ldaps enabled)                               | `636`           |
+| `networkPolicy.enabled`                 | Enable creation of NetworkPolicy resources                              | `false`         |
+| `networkPolicy.allowExternal`           | Don't require client label for connections                              | `true`          |
+| `networkPolicy.extraIngress`            | Add extra ingress rules to the NetworkPolicy                            | `[]`            |
+| `networkPolicy.extraEgress`             | Add extra egress rules to the NetworkPolicy                             | `[]`            |
+| `networkPolicy.ingressNSMatchLabels`    | Labels to match to allow traffic from other namespaces                  | `{}`            |
+| `networkPolicy.ingressNSPodMatchLabels` | Pod labels to match to allow traffic from other namespaces              | `{}`            |
 
 ### Image parameters
 

@@ -20,6 +20,9 @@ gid: 1000
 ## @param affinity Affinity for pods assignment
 ##
 affinity: {}
+## @param timezone Timezone of the pod, by default, UTC will be used
+##
+timezone: ""
 ## @param clusterDomain Kubernetes cluster domain name
 ##
 clusterDomain: cluster.local
@@ -32,6 +35,9 @@ commonLabels: {}
 ## @param podLabels Labels to add to pods
 ##
 podLabels: {}
+## @param extraEnv Extra environment variables passed to the pod - in format: `key: value`
+##
+extraEnv: {}
 ## @param extraDeploy Array of extra objects to deploy with the release
 ##
 extraDeploy: []
