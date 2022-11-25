@@ -229,9 +229,14 @@ ldap:
 ## on), the path, the user, password, and sometimes the mode (when
 ## relevant).
 ## SQlite should come with "?mode=rwc" to create the DB if not present.
-## @param databaseUrl LLDAP database url
 ##
-databaseUrl: "sqlite:///data/users.db?mode=rwc"
+database:
+  ## @param database.url LLDAP database url
+  ##
+  url: "sqlite:///data/users.db?mode=rwc"
+  ## @param database.useSecretFile Mount database url as file instead of using an environment variable
+  ##
+  useSecretFile: true
 
 ## lldap private key file.
 ## Contains the secret private key used to store the passwords safely

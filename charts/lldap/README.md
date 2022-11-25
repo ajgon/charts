@@ -138,7 +138,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ldap.userEmail`                 | Admin email                                                           | `admin@localhost`                  |
 | `ldap.userPass`                  | Admin password                                                        | `""`                               |
 | `ldap.useSecretFile`             | Mount password as file instead of using an environment variable       | `true`                             |
-| `databaseUrl`                    | LLDAP database url                                                    | `sqlite:///data/users.db?mode=rwc` |
+| `database.url`                   | LLDAP database url                                                    | `sqlite:///data/users.db?mode=rwc` |
+| `database.useSecretFile`         | Mount database url as file instead of using an environment variable   | `true`                             |
 | `keyFile.value`                  | Private key - 128 bytes encoded in base64                             | `""`                               |
 | `ignoredAttributes.user`         | Ignored user attributes                                               | `[]`                               |
 | `ignoredAttributes.group`        | Ignored group attributes                                              | `[]`                               |

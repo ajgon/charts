@@ -108,8 +108,16 @@ spec:
                   name: {{ template "lldap.fullname" . }}
                   key: user-password
             {{- end }}
+            {{- if .Values.database.useSecretFile }}
+            - name: LLDAP_DATABASE_URL_FILE
+              value: "/secrets/database-url"
+            {{- else }}
             - name: LLDAP_DATABASE_URL
-              value: '{{ .Values.databaseUrl }}'
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "lldap.fullname" . }}
+                  key: database-url
+            {{- end }}
             - name: LLDAP_KEY_FILE
               value: "/secrets/key-file"
             {{- if .Values.ignoredAttributes.user }}
@@ -195,6 +203,10 @@ spec:
             secretName: {{ template "lldap.fullname" . }}
             defaultMode: 0400
             items:
+            {{- if .Values.database.useSecretFile }}
+            - key: database-url
+              path: database-url
+            {{- end }}
             {{- if .Values.jwt.useSecretFile }}
             - key: jwt-secret
               path: jwt-secret
