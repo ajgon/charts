@@ -224,6 +224,15 @@ ldap:
   ##
   useSecretFile: true
 
+## lldap database url
+## This encodes the type of database (SQlite, Mysql and so
+## on), the path, the user, password, and sometimes the mode (when
+## relevant).
+## SQlite should come with "?mode=rwc" to create the DB if not present.
+## @param databaseUrl LLDAP database url
+##
+databaseUrl: "sqlite:///data/users.db?mode=rwc"
+
 ## lldap private key file.
 ## Contains the secret private key used to store the passwords safely
 ## Note that even with a database dump and the private key, an attacker would still have to perform an (expensive) brute force attack to find each password

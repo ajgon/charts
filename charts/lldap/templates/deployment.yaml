@@ -108,6 +108,8 @@ spec:
                   name: {{ template "lldap.fullname" . }}
                   key: user-password
             {{- end }}
+            - name: LLDAP_DATABASE_URL
+              value: '{{ .Values.databaseUrl }}'
             - name: LLDAP_KEY_FILE
               value: "/secrets/key-file"
             {{- if .Values.ignoredAttributes.user }}
