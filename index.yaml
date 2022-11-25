@@ -5,6 +5,31 @@ entries:
       category: LDAP
     apiVersion: v2
     appVersion: latest-alpine
+    created: "2022-11-25T16:09:22.509039007Z"
+    description: Light LDAP server for user management
+    digest: a55fee8e2cd2e4b74625a94ed640895a5f54c546cb251515205caf6dd3ff143a
+    home: https://github.com/ajgon/charts/tree/master/charts/lldap
+    icon: https://github.com/ajgon/charts/raw/master/charts/lldap/icon.png
+    keywords:
+    - lldap
+    - ldap
+    - access-management
+    maintainers:
+    - name: ajgon
+      url: https://github.com/ajgon/charts
+    - email: helm@ajgon.ovh
+      name: ajgon
+    name: lldap
+    sources:
+    - https://github.com/nitnelave/lldap
+    type: application
+    urls:
+    - https://github.com/ajgon/charts/releases/download/lldap-0.5.0/lldap-0.5.0.tgz
+    version: 0.5.0
+  - annotations:
+      category: LDAP
+    apiVersion: v2
+    appVersion: latest-alpine
     created: "2022-11-01T19:48:44.33482981Z"
     description: Light LDAP server for user management
     digest: 75294695a846970e22c2f0aeb3ddea49582fe85fa98e6665dcac4f49409d213f
@@ -301,4 +326,4 @@ entries:
     urls:
     - https://github.com/ajgon/charts/releases/download/lldap-0.1.0/lldap-0.1.0.tgz
     version: 0.1.0
-generated: "2022-11-01T19:48:44.335549215Z"
+generated: "2022-11-25T16:09:22.509438911Z"
